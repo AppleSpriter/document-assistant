@@ -1,0 +1,925 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f7f8fa">
+  <meta name="description" content="粘贴文本，自动标记涨跌颜色，计算表格增量与比例。">
+  <title>文档助手 · 让数据表达更清晰</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%3Crect%20width%3D%2240%22%20height%3D%2240%22%20rx%3D%2212%22%20fill%3D%22%23e87759%22%2F%3E%3Cpath%20d%3D%22M12%2011h12l5%205v13H12z%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22M24%2011v6h5M16%2021h9M16%2025h6%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E%0A" type="image/svg+xml">
+  <style>:root{--bg:#f7f8fa;--surface:#fff;--ink:#26334b;--muted:#8991a1;--line:#e8ebf0;--coral:#df785e;--coral-light:#fff3ee;--green:#13845b;--red:#d34444;--font:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;--mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14px;-webkit-font-smoothing:antialiased}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{cursor:default;opacity:.45}button,a,input,select,textarea{outline-offset:4px}button:focus-visible,a:focus-visible{outline:2px solid var(--coral)}button{color:inherit}svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}.icon-sprite{position:absolute;width:0;height:0;overflow:hidden}[hidden]{display:none!important}.sr-only{position:absolute;clip:rect(0,0,0,0);width:1px;height:1px;overflow:hidden}.positive{color:var(--green)}.negative{color:var(--red)}
+.topbar{height:76px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 42px}.brand{display:flex;align-items:center;gap:11px;color:var(--ink);text-decoration:none;font-size:18px;font-weight:650;letter-spacing:.3px}.brand-mark{width:35px;height:35px;border-radius:10px;background:var(--coral);color:white;display:grid;place-items:center}.brand-mark svg{width:23px;height:23px}.brand-tag{margin-left:8px;font-size:9px;font-weight:600;letter-spacing:1.7px;color:#a6acb8;border-left:1px solid var(--line);padding-left:18px}.topbar-right{display:flex;align-items:center;gap:28px}.local-indicator{font-size:12px;color:#828b9b;display:flex;align-items:center;gap:7px}.local-indicator i,.live-badge i,.result-footer>span i{width:5px;height:5px;border-radius:50%;background:#4eaa86}.help-button{text-decoration:none;display:flex;align-items:center;gap:8px;border:0;background:none;font-size:12px;color:#647083;padding:8px 0}.help-button svg{width:16px;height:16px}main{max-width:1600px;padding:0 42px;margin:0 auto}.intro{display:flex;align-items:center;justify-content:space-between;padding:35px 0 30px}.eyebrow{font-size:10px;letter-spacing:2px;font-weight:650;color:#a1a8b4}h1{font-size:27px;letter-spacing:-.6px;font-weight:600;margin:10px 0 10px;line-height:1.45}h1 span{font-weight:400}h1+p{margin:0;font-size:13px;color:#8991a1}.intro-note{display:flex;align-items:center;gap:15px;color:#788398;font-size:12px;line-height:1.9;padding-right:9px}.intro-note>svg{color:var(--coral);width:31px;height:31px;stroke-width:1.25}.intro-note small{font-size:11px;color:#a1a8b4}.workspace{display:grid;grid-template-columns:228px minmax(0,1fr);gap:24px}.settings{background:white;border:1px solid var(--line);border-radius:13px;align-self:start;overflow:hidden}.settings-title{padding:20px 19px 18px;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:600}.settings-title>span{font-family:var(--mono);font-size:9px;font-weight:400;letter-spacing:1px;color:#b0b5bf}.setting-section{margin:0 19px;padding:18px 0;border-top:1px solid var(--line)}.setting-label{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:600}.setting-label>span{display:flex;align-items:center;gap:8px}.step-number{font-family:var(--mono);color:#a4adbb;font-size:10px;font-weight:400}.setting-description{font-size:11px;color:#929aab;margin:9px 0 13px;line-height:1.6}.color-examples{display:flex;gap:8px;margin-top:12px}.color-examples span{font-family:var(--mono);font-size:11px;font-weight:600;padding:7px 9px;border-radius:5px}.color-examples .positive{background:#eef8f2}.color-examples .negative{background:#fff1f1}.switch{position:relative;width:29px;height:17px;display:inline-block}.switch input{opacity:0;width:0;height:0}.switch>span{position:absolute;inset:0;border-radius:20px;background:#d3d8e1;cursor:pointer;transition:.2s}.switch>span:before{content:"";position:absolute;width:11px;height:11px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}.switch input:checked+span{background:var(--coral)}.switch input:checked+span:before{transform:translateX(12px)}.switch input:focus-visible+span{outline:2px solid var(--coral);outline-offset:3px}.mode-list{display:grid;gap:7px}.mode-button{width:100%;display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--line);border-radius:7px;background:#fff;text-align:left;transition:.15s}.mode-button>svg{width:17px;height:17px;color:#9ba5b4}.mode-button>span{font-size:12px;font-weight:500;line-height:1.5}.mode-button small{display:block;font-size:9px;color:#9aA3b1;font-weight:400;margin-top:2px}.mode-button>i{margin-left:auto;width:12px;height:12px;border:1px solid #dce0e7;border-radius:50%}.mode-button.active{border-color:#efb3a2;background:#fff8f5}.mode-button.active>svg{color:var(--coral)}.mode-button.active>i{border:3px solid var(--coral);background:#fff}.mode-button:hover,.direction-grid button:hover,.ratio-buttons button:hover{border-color:#edb19f}.text-button{padding:0;border:0;background:none;color:#8c96a7;font-size:11px;line-height:1.5}.text-button:hover{color:var(--coral)}#no-calculation{margin:11px 0 0;font-size:10px}#no-calculation.active{color:var(--coral)}.mode-settings{margin-top:19px}.field-label{display:block;font-size:11px;font-weight:500;color:#6f7b90;margin-bottom:9px}.direction-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.direction-grid button,.ratio-buttons button{border:1px solid var(--line);border-radius:5px;background:white;font-size:11px;padding:9px 6px;display:flex;align-items:center;justify-content:center;gap:5px}.direction-grid svg{width:14px;height:14px}.direction-grid .active,.ratio-buttons .active{color:var(--coral);border-color:#efb3a2;background:var(--coral-light)}.ratio-buttons{display:flex;gap:7px}.ratio-buttons button{flex:1}.formula-card{margin-top:15px;padding:11px 10px;border-radius:6px;background:#f7f8fa;border:1px solid #f0f2f5}.formula-card>span{font-size:9px;color:#9aa3b2;display:block;margin-bottom:5px}.formula-card code{font-size:10px;color:#717d92;font-family:var(--mono);line-height:1.6}.output-settings{padding-bottom:19px}.precision-field{display:flex;align-items:center;justify-content:space-between;margin-top:15px;color:#8390a1;font-size:11px}.precision-field select{border:1px solid var(--line);border-radius:5px;padding:5px 4px;font-size:10px;color:#6e7b91;background:white;cursor:pointer}.checkbox-label{display:flex;align-items:center;gap:6px;font-size:10px;color:#758195;margin-top:15px}.checkbox-label input{width:12px;height:12px;margin:0;accent-color:var(--coral)}.auto-hint{margin:5px 0 0 18px;font-size:9px}.number-field{border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;padding:5px 10px;gap:8px}.number-field svg{width:16px;color:#a5adba}.number-field input{width:100%;border:0;padding:5px;background:none;font-family:var(--mono);font-size:12px;color:var(--ink)}#divide-settings>small{display:block;margin-top:7px;color:var(--muted);font-size:10px}
+.editor-area{min-width:0}.editor-panes{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}.editor-panel{background:#fff;border:1px solid var(--line);border-radius:13px;overflow:hidden;display:flex;flex-direction:column;height:580px;min-width:0}.panel-header{height:64px;padding:0 21px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);gap:10px;flex-shrink:0}.panel-title{display:flex;align-items:center;gap:8px;white-space:nowrap}.panel-dot{width:6px;height:6px;background:#a9b2c2;border-radius:2px}.panel-dot.coral{background:var(--coral)}h2{font-size:13px;margin:0;font-weight:600}.panel-tools{display:flex;align-items:center;gap:16px}.sample-select{position:relative;display:flex;align-items:center;gap:3px;font-size:10px;color:#8390a3;cursor:pointer}.sample-select svg{width:13px;height:13px}.sample-select select{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}.sample-select:focus-within{outline:2px solid var(--coral);outline-offset:3px}.input-caption,.result-caption{padding:19px 22px 9px;font-size:11px;color:#9aa3b2;flex-shrink:0}.input-panel textarea{padding:11px 22px 22px;margin:0;border:none;outline:none;resize:none;width:100%;flex:1;min-height:0;line-height:1.95;font-family:var(--mono);font-size:12px;font-weight:400;color:#5e6b80;tab-size:2;background:white;white-space:pre;overflow:auto}.input-panel textarea::placeholder{color:#abb3c0}.input-panel textarea:focus{box-shadow:inset 3px 0 0 #efb4a3}.panel-footer{height:55px;border-top:1px solid var(--line);padding:0 21px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:#fff;color:#9da5b3;font-size:10px;gap:8px}.footer-separator{color:#d3d7df;margin:0 8px}.keyboard-hint{font-size:9px;color:#afb5bf}.live-badge{font-size:9px;font-weight:400;background:#f0f8f3;color:#71a185;border-radius:4px;display:flex;align-items:center;gap:4px;padding:3px 5px;margin-left:2px}.live-badge i{width:4px;height:4px}.view-tabs{display:flex;padding:3px;background:#f6f7f9;border-radius:6px;gap:2px}.view-tabs button{border:0;background:none;font-size:10px;color:#9aa3b2;padding:5px 9px;border-radius:4px}.view-tabs button.active{background:white;box-shadow:0 1px 3px #26334b0d;color:#5d6b81}.result-caption{display:flex;align-items:center;gap:5px;color:#8997a6}.result-caption svg{width:13px;height:13px;color:#8aa69a}.result-content,.markdown-output{flex:1;min-height:0;overflow:auto;padding:12px 22px 22px;font-size:12px;line-height:2;color:#4f5f74;overflow-wrap:anywhere}.result-content .text-line{min-height:24px}.result-content h2{font-size:16px;margin:0 0 10px;font-weight:600;color:#34455b}.result-content h3{font-size:14px;margin:10px 0 6px}.result-content code{font-family:var(--mono);font-size:11px;background:#f3f5f8;border-radius:4px;padding:2px 4px}.table-wrap{overflow:auto;margin:12px 0 18px;border:1px solid #333;border-radius:8px;max-width:100%;background:#fff;box-shadow:0 1px 2px #26334b0a}table{border-collapse:collapse;min-width:100%;font-family:var(--mono);font-size:11px;line-height:1.5;font-variant-numeric:tabular-nums}th,td{padding:8px 14px;text-align:right;white-space:nowrap;border-bottom:1px solid #333;font-weight:400}td+td,th+th{border-left:1px solid #333}th{font-family:var(--font);text-align:right;font-weight:600;background:#f6f8fa;color:#5d6b80;border-bottom:1px solid #333}th:first-child,td:first-child{text-align:left;font-family:var(--font);color:#5d6b80}tbody tr:nth-child(even) td{background:#fbfcfd}tbody tr:hover td{background:#f5f7fa}tbody tr:last-child td{border-bottom:0}tbody tr:has(.blank-cell):not(:has(td:not(:has(.blank-cell)))) td{padding:3px;background:#fff}.calculated-row td,tbody tr.calculated-row:nth-child(even) td{background:#fbf6f4;border-top:1px solid #333;font-weight:600}.calculated-row td:first-child{color:#c26a52;font-size:10px}.has-col-delete{position:relative}.col-delete{position:absolute;top:2px;right:2px;width:16px;height:16px;border:0;border-radius:4px;background:#e2564b;color:#fff;font-size:12px;line-height:16px;padding:0;display:none;cursor:pointer;z-index:1}.row-delete{position:absolute;left:2px;top:50%;transform:translateY(-50%);width:16px;height:16px;border:0;border-radius:4px;background:#e2564b;color:#fff;font-size:12px;line-height:16px;padding:0;display:none;cursor:pointer;z-index:1}.table-edit .has-col-delete:hover .col-delete,.table-edit .col-delete:focus-visible{display:block}.table-edit tr:hover .row-delete,.table-edit .row-delete:focus-visible{display:block}.table-edit tr:has(.row-delete:hover) td{background:#fdecea!important}.table-edit .table-wrap{outline:1px dashed #e2564b66;outline-offset:3px}.edit-switch{display:flex;align-items:center;gap:6px;font-size:10px;color:#8390a3;white-space:nowrap;cursor:pointer}.full-page-content .row-delete{display:none!important}.full-page-content .col-delete{display:none!important}.markdown-output{font-family:var(--mono);font-size:11px;border:none;outline:none;resize:none;white-space:pre;line-height:1.85;width:100%;background:#fff}.result-footer{gap:8px}.result-footer>span{display:flex;align-items:center;gap:6px;font-size:10px}.result-footer>div{display:flex;align-items:center;gap:13px}.icon-button{border:0;background:none;display:grid;place-items:center;padding:7px;color:#9da7b6}.icon-button svg{width:16px;height:16px}.icon-button:hover{color:var(--coral)}.copy-button{background:var(--coral);border:1px solid var(--coral);border-radius:6px;color:#fff;display:flex;align-items:center;justify-content:center;gap:7px;font-size:11px;font-weight:500;padding:9px 13px;transition:.2s}.copy-button svg{width:14px;height:14px}.copy-button:hover{background:#d26950;border-color:#d26950}.empty-state{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;color:#acb5c3}.empty-state>span{background:#f7f8fa;border-radius:15px;width:60px;height:60px;display:grid;place-items:center;margin-bottom:15px}.empty-state svg{width:28px;height:28px;color:#b6bfca;stroke-width:1.3}.empty-state h3{font-size:13px;font-weight:500;color:#8995a7}.empty-state p{font-size:11px;margin-top:3px;line-height:1.8}.workspace-bottom{display:flex;align-items:center;justify-content:space-between;margin:18px 2px 22px;font-size:11px;color:#a0a8b5}.summary-stats{display:flex;gap:20px}.summary-stats>span{display:flex;align-items:center;gap:5px}.summary-stats b{font-weight:500;color:#6a798d}.summary-stats i{width:5px;height:5px;border-radius:50%;margin-right:2px}.summary-stats i.green{background:#7dad95}.summary-stats i.coral{background:#dfac9d}.saved-note{display:flex;align-items:center;gap:5px;font-size:10px;color:#a1a9b7}.saved-note svg{width:12px;height:12px}.tip-card{display:flex;align-items:center;gap:12px;background:#f0f3f7;border:1px solid #e8edf4;border-radius:9px;padding:13px 16px}.tip-icon{width:27px;height:27px;border-radius:6px;background:#e6ebf2;display:grid;place-items:center;color:#99a8bb}.tip-icon svg{width:16px;height:16px}.tip-card p{font-size:11px;line-height:1.8;color:#929eb0;margin:0;flex:1}.tip-card strong{font-weight:500;color:#7e8ca0}.tip-card button{background:none;border:0;color:#a2adbc;display:grid;place-items:center;padding:5px}.tip-card button svg{width:17px;height:17px}.page-footer{display:flex;align-items:center;justify-content:space-between;font-size:10px;color:#b0b7c2;padding:29px 0 22px;margin-top:6px}.page-footer i{font-style:normal;margin:0 7px;color:#ccd0d7}.warnings{background:#fff7ec;border:1px solid #f4dec2;border-radius:7px;padding:11px 14px;font-size:11px;line-height:1.8;color:#a87838;margin-top:14px}.toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%);padding:12px 22px;background:#28364e;color:#fff;border-radius:9px;font-size:12px;box-shadow:0 5px 30px #25324928;z-index:20;max-width:90vw}dialog{border:1px solid var(--line);border-radius:16px;max-width:620px;width:calc(100% - 32px);padding:30px;color:var(--ink);box-shadow:0 20px 80px #26334b25;max-height:85vh;overflow:auto}dialog::backdrop{background:#25324955;backdrop-filter:blur(3px)}.dialog-heading{display:flex;align-items:center;justify-content:space-between}.dialog-heading button{font-size:25px;border:0;background:none;color:#8a97aa;line-height:1;padding:5px}dialog>h2{font-size:23px;margin:13px 0 13px}dialog p{font-size:12px;line-height:1.9;color:#8895a7}.guide-item{display:flex;gap:15px;padding:12px 0}.guide-item>span{font-family:var(--mono);font-size:11px;color:var(--coral);padding-top:3px}.guide-item h3{font-size:13px;margin:0;font-weight:600}.guide-item p{margin:7px 0 0}.guide-item b{font-weight:500}#got-it{margin:16px 0 0 auto;font-size:12px;padding:11px 17px}
+@media(min-width:1500px){.editor-panel{height:620px}.input-panel textarea,.result-content{font-size:13px}table{font-size:12px}.workspace{grid-template-columns:240px minmax(0,1fr);gap:28px}}
+@media(max-width:1200px){main{padding:0 26px}.topbar{padding:0 26px}.workspace{grid-template-columns:210px minmax(0,1fr);gap:16px}.settings-title{padding:18px 15px}.setting-section{margin:0 15px}.editor-panes{gap:13px}.panel-header{padding:0 15px}.panel-tools{gap:9px}.panel-title{gap:6px}.input-caption,.result-caption{padding-left:16px;padding-right:16px}.input-panel textarea,.result-content,.markdown-output{padding-left:16px;padding-right:16px}.panel-footer{padding:0 15px}.keyboard-hint{display:none}.view-tabs button{padding:5px 6px}.live-badge{display:none}.intro-note{display:none}h1{font-size:25px}.brand-tag{font-size:8px}}
+@media(max-width:950px){.workspace{grid-template-columns:190px minmax(0,1fr)}.editor-panes{grid-template-columns:1fr}.editor-panel{height:410px}.settings{position:sticky;top:18px}.intro{padding:27px 0}.workspace-bottom{gap:10px}.saved-note{font-size:9px}.tip-card{padding:12px}.page-footer{gap:12px}.panel-tools{gap:18px}.live-badge{display:flex}.view-tabs button{padding:5px 9px}.keyboard-hint{display:block}}
+@media(max-width:650px){.topbar{height:63px;padding:0 18px}.brand{font-size:16px;gap:8px}.brand-mark{width:30px;height:30px;border-radius:8px}.brand-tag,.local-indicator{display:none}.help-button{font-size:11px}main{padding:0 16px}.intro{padding:25px 0}.eyebrow{font-size:8px;letter-spacing:1.6px}h1{font-size:21px;line-height:1.55;margin:9px 0}h1 span{display:block;font-size:20px}h1+p{font-size:11px;line-height:1.8}.workspace{display:flex;flex-direction:column;gap:16px}.settings{position:static;width:100%;display:grid;grid-template-columns:1fr 1fr;border-radius:10px}.settings-title{grid-column:1/-1;padding:15px 16px}.setting-section{margin:0 16px;padding:15px 0}.color-section{grid-column:1;grid-row:2}.settings .setting-section:nth-of-type(2){grid-column:1/-1;grid-row:3;display:grid;grid-template-columns:1fr 1fr;gap:0 16px}.settings .setting-section:nth-of-type(2)>.setting-label,.settings .setting-section:nth-of-type(2)>.setting-description{grid-column:1/-1}.mode-list{grid-column:1;grid-row:3/6}.mode-button{padding:9px 8px;gap:7px}.mode-button small{font-size:8px}.mode-button>span{font-size:10px}.mode-button>svg{width:15px;height:15px}#no-calculation{grid-column:2;grid-row:5;margin:8px 0 0;text-align:left}.mode-settings{grid-column:2;grid-row:3;margin-top:0}.formula-card{grid-column:2;grid-row:4;margin-top:11px}.direction-grid{gap:5px}.direction-grid button{font-size:10px;padding:8px 2px;gap:3px}.direction-grid svg{width:12px;height:12px}.output-settings{grid-column:2;grid-row:2}.output-settings .setting-label{font-size:12px}.precision-field{margin-top:11px;font-size:10px}.checkbox-label{margin-top:9px;font-size:9px;gap:4px}.auto-hint{font-size:8px}.color-examples{gap:5px}.color-examples span{font-size:10px;padding:5px}.color-section .setting-description{font-size:10px}.editor-panes{gap:16px}.editor-panel{height:400px;border-radius:10px}.panel-header{height:54px}.input-caption,.result-caption{padding-top:15px}.input-panel textarea{font-size:11px}.result-content{font-size:12px}.tip-card p{font-size:10px}.saved-note{display:none}.workspace-bottom{margin-bottom:15px}.page-footer{font-size:9px;padding:22px 0;flex-direction:column;gap:10px;align-items:flex-start}.page-footer>span:last-child{display:none}.tip-icon{display:none}dialog{padding:22px}dialog>h2{font-size:20px}.topbar-right{gap:10px}}
+.settings-title>button{display:none}
+@media(max-width:650px){.settings-title>span{display:none}.settings-title>button{display:flex;align-items:center;gap:3px;border:0;background:none;padding:0;color:#929daf;font-size:10px;font-weight:400}.settings-title>button svg{width:13px;height:13px}.settings.mobile-collapsed .setting-section{display:none}.settings-title>button[aria-expanded="true"] svg{transform:rotate(180deg)}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+body.full-page-preview-active{background:#fff}
+.full-page-preview-active>.topbar,.full-page-preview-active>main{display:none}
+#full-page-preview{width:max-content;min-width:100%}
+.full-page-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:12px 24px;width:100%;max-width:100vw;padding:16px 24px;border-bottom:1px solid var(--line);font-size:11px;color:var(--muted)}
+.full-page-toolbar button{display:flex;align-items:center;gap:6px;flex-shrink:0;color:var(--ink)}
+.full-page-toolbar svg{width:15px;height:15px}
+.full-page-content{--full-table-scale:1;width:max-content;min-width:100%;padding:24px;overflow:visible;flex:none;font-size:14px}
+.full-page-content .table-wrap{width:max-content;min-width:0;max-width:none;overflow:visible;margin-left:0;margin-right:auto;zoom:var(--full-table-scale)}
+.full-page-content[data-table-align="center"] .table-wrap{margin-left:auto;margin-right:auto}
+.full-page-content[data-table-align="right"] .table-wrap{margin-left:auto;margin-right:0}
+.full-page-content table{font-size:12px;min-width:0}
+.full-table-controls{display:flex;align-items:center;gap:9px;color:var(--ink)}
+.full-table-controls>span{white-space:nowrap}
+.full-table-align{display:flex;gap:4px}
+.full-table-align button{border:1px solid var(--line);border-radius:5px;background:#fff;padding:6px 9px;font-size:11px}
+.full-table-align button.active{border-color:#efb3a2;background:var(--coral-light);color:var(--coral)}
+.full-table-scale input{width:120px;accent-color:var(--coral)}
+.full-table-scale output{min-width:36px;font-family:var(--mono);font-size:11px}
+.color-examples{flex-wrap:wrap}
+@media(min-width:651px){
+  .workspace{grid-template-columns:340px minmax(0,1fr);gap:20px}
+  .settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+  .settings-title{grid-column:1/-1;padding:18px 14px}
+  .setting-section{margin:0 14px;padding:16px 0}
+  .color-section{grid-column:1;grid-row:2}
+  .calculation-section{grid-column:2;grid-row:2/4}
+  .output-settings{grid-column:1;grid-row:3}
+  .mode-button{padding:9px 7px}
+  .direction-grid button,.ratio-buttons button{padding:8px 4px;gap:4px}
+  .output-settings .precision-field{display:grid;grid-template-columns:minmax(0,1fr);gap:7px}
+  .output-settings .precision-field select{width:100%;min-width:0}
+  .checkbox-label{align-items:flex-start}
+  .checkbox-label input{flex-shrink:0}
+  .editor-panes{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  .input-panel .panel-header{padding-left:14px;padding-right:14px}
+  .input-panel .panel-tools{gap:10px}
+  .input-panel .input-caption,.input-panel .panel-footer{padding-left:14px;padding-right:14px}
+  .input-panel textarea{padding-left:16px;padding-right:16px;white-space:pre-wrap;overflow-wrap:anywhere}
+  .input-panel .keyboard-hint{display:none}
+}
+@media(min-width:1500px){.workspace{grid-template-columns:360px minmax(0,1fr);gap:24px}.editor-panes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:951px) and (max-width:1200px){.workspace{grid-template-columns:320px minmax(0,1fr);gap:16px}.editor-panes{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}}
+@media(min-width:651px) and (max-width:950px){.workspace{grid-template-columns:300px minmax(0,1fr);gap:16px}.editor-panes{grid-template-columns:1fr}}
+.full-page-content .text-line,.full-page-content h2,.full-page-content h3,.full-page-content h4{max-width:calc(100vw - 48px)}
+@media(max-width:650px){.full-page-toolbar{gap:12px;align-items:flex-start}.full-page-toolbar>span{max-width:calc(100vw - 140px);font-size:10px}}
+.choice-group{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:6px}.choice-group button{border:1px solid var(--line);border-radius:5px;background:#fff;font-size:10px;padding:7px 2px;color:#5d6b80;white-space:nowrap;cursor:pointer}.choice-group button:hover{border-color:#edb19f}.choice-group button.active{color:var(--coral);border-color:#efb3a2;background:var(--coral-light)}.stepper{display:flex;margin-top:6px;border:1px solid var(--line);border-radius:5px;background:#fff;overflow:hidden;width:100%}.stepper:focus-within{border-color:#efb3a2}.stepper input{flex:1;min-width:0;border:0;outline:0;padding:7px 9px;font:inherit;font-size:11px;color:var(--ink);-moz-appearance:textfield}.stepper input::-webkit-inner-spin-button,.stepper input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}.stepper-buttons{display:flex;flex-direction:column;border-left:1px solid var(--line)}.stepper-buttons button{flex:1;border:0;background:#f7f8fa;color:#8390a3;font-size:7px;width:24px;padding:0;cursor:pointer;line-height:1}.stepper-buttons button+button{border-top:1px solid var(--line)}.stepper-buttons button:hover{background:var(--coral-light);color:var(--coral)}
+#cell-align{grid-template-columns:repeat(4,1fr)}table.align-left th,table.align-left td{text-align:left}table.align-center th,table.align-center td{text-align:center}table.align-right th,table.align-right td{text-align:right}
+</style>
+</head>
+<body>
+  <svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-document" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM15 3v5h4M9 12h7M9 16h5"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z"/></symbol>
+    <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5m-6 6 6-6 6 6"/></symbol>
+    <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14m-6-6 6 6 6-6"/></symbol>
+    <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-growth" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-10M15 5h6v6"/></symbol>
+    <symbol id="i-ratio" viewBox="0 0 24 24"><path d="M12 3v9h9A9 9 0 0 0 12 3ZM8 4a9 9 0 1 0 12 12"/></symbol>
+    <symbol id="i-divide" viewBox="0 0 24 24"><path d="M5 12h14"/><circle cx="12" cy="6" r="1"/><circle cx="12" cy="18" r="1"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 17-5-5-9 8"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v.1"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m8 10 4 4 4-4"/></symbol>
+  </svg>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="文档助手首页"><span class="brand-mark"><svg><use href="#i-document"/></svg></span><span>文档助手</span><span class="brand-tag">WORKSPACE</span></a>
+    <div class="topbar-right"><span class="local-indicator"><i></i> 本地处理，安心输入</span><a class="help-button" href="index.html" lang="en">English</a><button id="help-button" class="help-button">使用说明 <svg><use href="#i-info"/></svg></button></div>
+  </header>
+  <main>
+    <section class="intro">
+      <div><div class="eyebrow">LESS FORMATTING. MORE CLARITY.</div><h1>把整理交给助手，<span>把时间留给思考。</span></h1><p>粘贴文本或表格，自动配色、计算增量，一次完成。</p></div>
+      <div class="intro-note"><svg><use href="#i-spark"/></svg><span>输入即处理<br><small>每一处变化，都清晰可见</small></span></div>
+    </section>
+    <div class="workspace">
+      <aside id="settings-panel" class="settings mobile-collapsed" aria-label="处理设置">
+        <div class="settings-title">处理设置 <span>01 — 03</span><button id="settings-toggle" aria-expanded="false" aria-controls="settings-panel">展开设置 <svg><use href="#i-chevron"/></svg></button></div>
+        <section class="setting-section color-section">
+          <div class="setting-label"><span><span class="step-number">01</span> 涨跌配色</span><label class="switch"><input id="color-toggle" type="checkbox" checked aria-label="开启涨跌配色"><span></span></label></div>
+          <p class="setting-description">让正负变化一眼可见</p>
+          <div class="color-examples"><span class="positive">+120w/d</span><span class="negative">−15w</span><span class="negative">低 5pp</span><span class="positive">高 2pp</span></div>
+        </section>
+        <section class="setting-section calculation-section">
+          <div class="setting-label"><span><span class="step-number">02</span> 表格计算</span></div>
+          <p class="setting-description">选择你想看的数据关系</p>
+          <div class="mode-list" role="group" aria-label="计算方式">
+            <button class="mode-button active" data-mode="growth" aria-pressed="true"><svg><use href="#i-growth"/></svg><span>增量空间<small>比较两组数值的变化</small></span><i></i></button>
+            <button class="mode-button" data-mode="ratio" aria-pressed="false"><svg><use href="#i-ratio"/></svg><span>上下方比例<small>计算数值在总量中的占比</small></span><i></i></button>
+            <button class="mode-button" data-mode="divide" aria-pressed="false"><svg><use href="#i-divide"/></svg><span>除法计算<small>按指定数值进行均分</small></span><i></i></button>
+          </div>
+          <button id="no-calculation" class="text-button" aria-pressed="false">仅配色，不计算</button>
+          <div id="growth-settings" class="mode-settings">
+            <label class="field-label">查看方向</label>
+            <div class="direction-grid" role="group" aria-label="查看方向">
+              <button data-direction="up" class="active" aria-pressed="true"><svg><use href="#i-arrow-up"/></svg>看上方</button>
+              <button data-direction="down" aria-pressed="false"><svg><use href="#i-arrow-down"/></svg>看下方</button>
+              <button data-direction="left" aria-pressed="false"><svg><use href="#i-arrow-left"/></svg>看左侧</button>
+              <button data-direction="right" aria-pressed="false"><svg><use href="#i-arrow-right"/></svg>看右侧</button>
+            </div>
+          </div>
+          <div id="ratio-settings" class="mode-settings" hidden>
+            <label class="field-label">计算哪一方的占比</label>
+            <div class="ratio-buttons" role="group" aria-label="占比方向"><button data-ratio="up" aria-pressed="false">上方</button><button data-ratio="down" class="active" aria-pressed="true">下方</button></div>
+          </div>
+          <div id="divide-settings" class="mode-settings" hidden><label class="field-label" for="divisor">除以</label><div class="number-field"><svg><use href="#i-divide"/></svg><input id="divisor" type="number" value="7" step="any" aria-describedby="divisor-help"></div><small id="divisor-help">对表格中的每个数值进行计算</small></div>
+          <div id="formula" class="formula-card"><span>计算公式</span><code>(上方 − 下方) / 下方</code></div>
+        </section>
+        <section class="setting-section output-settings">
+          <div class="setting-label"><span><span class="step-number">03</span> 输出选项</span></div>
+          <label class="precision-field" for="precision"><span id="precision-label">百分比小数位</span><span class="stepper"><input id="precision" type="number" inputmode="numeric" min="0" max="6" step="1" value="2"><span class="stepper-buttons"><button type="button" data-step="1" aria-label="增加一位">▲</button><button type="button" data-step="-1" aria-label="减少一位">▼</button></span></span></label>
+          <div class="precision-field"><span>无符号数字</span><span class="choice-group" id="unsigned-color" role="group" aria-label="无符号数字"><button type="button" data-unsigned="none">不配色</button><button type="button" data-unsigned="red">标红</button><button type="button" data-unsigned="green">标绿</button></span></div>
+          <p class="setting-description">仅补充无方向数字，正负号与高低规则优先</p>
+          <div class="precision-field"><span>符号转换</span><span class="choice-group" id="punctuation" role="group" aria-label="符号转换" aria-describedby="punctuation-help"><button type="button" data-punct="none">不转换</button><button type="button" data-punct="zh">英→中</button><button type="button" data-punct="en">中→英</button></span></div>
+          <p id="punctuation-help" class="setting-description">逗号、句号、引号等常见标点</p>
+          <div class="precision-field"><span>表格文字对齐</span><span class="choice-group" id="cell-align" role="group" aria-label="表格文字对齐" aria-describedby="cell-align-help"><button type="button" data-cell-align="auto">默认</button><button type="button" data-cell-align="left">靠左</button><button type="button" data-cell-align="center">居中</button><button type="button" data-cell-align="right">靠右</button></span></div>
+          <p id="cell-align-help" class="setting-description">默认首列靠左、其余靠右</p>
+          <div class="precision-field"><span>公式格式化</span><span class="choice-group" id="math-mode" role="group" aria-label="公式格式化" aria-describedby="math-help"><button type="button" data-math="none">不转换</button><button type="button" data-math="inline">转为 $</button><button type="button" data-math="block">转为 $$</button></span></div>
+          <p id="math-help" class="setting-description">把 \[ \] 和 \( \) 去掉，换成 $ 或 $$，多行合并为一行</p>
+          <label class="checkbox-label"><input id="table-detect" type="checkbox" checked><span>自动识别并转换表格</span></label>
+          <p class="setting-description auto-hint">关闭后含 | 的公式等文字不会变成表格</p>
+          <label class="checkbox-label"><input id="auto-detect" type="checkbox" checked><span>自动识别表格中的计算指令</span></label>
+          <p class="setting-description auto-hint">如「看上方」「除以 7」</p>
+        </section>
+      </aside>
+      <section class="editor-area" aria-label="文本编辑工作台">
+        <div class="editor-panes">
+          <section class="editor-panel input-panel">
+            <div class="panel-header"><div class="panel-title"><span class="panel-dot"></span><h2>原始文本</h2></div><div class="panel-tools"><label class="sample-select"><span>载入示例</span><svg><use href="#i-chevron"/></svg><select id="sample" aria-label="载入示例"><option value="">载入示例</option><option value="overview">配色与表格</option><option value="vertical">上下方增量</option><option value="horizontal">左右侧增量</option><option value="numericRight">纯数字（看右侧）</option><option value="ratio">上下方比例</option><option value="divide">除以 7</option><option value="punctuation">中英文符号</option></select></label><button id="clear" class="text-button">清空</button></div></div>
+            <div class="input-caption">文本、表格或纯数字；Tab 插入制表符</div>
+            <label for="input" class="sr-only">原始文本</label>
+            <textarea id="input" spellcheck="false" placeholder="在这里输入文本…&#10;&#10;例如：今日新增 +120w/d，环比 -15w&#10;&#10;| 12000 | 1500 |&#10;| --- | --- |&#10;| 15000 | 1800 |"></textarea>
+            <div class="panel-footer"><span><span id="char-count">0</span> 字符 <span class="footer-separator">/</span> <span id="table-count">0</span> 个表格</span><span class="keyboard-hint">⌘ / Ctrl + Enter 处理</span></div>
+          </section>
+          <section class="editor-panel result-panel">
+            <div class="panel-header"><div class="panel-title"><span class="panel-dot coral"></span><h2>处理结果</h2><span id="live-badge" class="live-badge"><i></i>实时</span></div><label class="edit-switch" title="打开后，鼠标移到表格上可删除行和列"><span>表格编辑模式</span><span class="switch"><input id="table-edit" type="checkbox" aria-label="表格编辑模式"><span></span></span></label><div class="view-tabs" role="group" aria-label="结果显示方式"><button data-view="preview" class="active" aria-pressed="true">预览</button><button data-view="markdown" aria-pressed="false">Markdown</button></div></div>
+            <div class="result-caption"><svg><use href="#i-check"/></svg><span id="result-caption">已自动处理</span></div>
+            <div id="preview" class="result-content" aria-label="处理结果预览"></div>
+            <textarea id="markdown" class="markdown-output" readonly hidden aria-label="Markdown 结果"></textarea>
+            <div id="empty-state" class="empty-state" hidden><span><svg><use href="#i-document"/></svg></span><h3>清晰的结果，从一次输入开始</h3><p>在左侧粘贴文本，处理结果会出现在这里。</p></div>
+            <div class="panel-footer result-footer"><span id="result-state"><i></i> 已同步</span><div><button id="full-preview-button" class="text-button" aria-controls="full-page-preview">整页预览</button><button id="download" class="icon-button" aria-label="导出 Markdown" title="导出 Markdown"><svg><use href="#i-download"/></svg></button><button id="copy-image" class="icon-button" aria-label="复制为图片" title="复制为图片（适合贴表格）"><svg><use href="#i-image"/></svg></button><button id="copy" class="copy-button"><svg><use href="#i-copy"/></svg>复制结果</button></div></div>
+          </section>
+        </div>
+        <div id="warnings" class="warnings" role="status" hidden></div>
+        <div class="workspace-bottom"><div class="summary-stats"><span><i class="green"></i> <b id="color-count">0</b> 处配色</span><span><i class="coral"></i> <b id="calculation-count">0</b> 项计算</span></div><span class="saved-note"><svg><use href="#i-check"/></svg>输入保存在当前浏览器</span></div>
+        <div class="tip-card"><span class="tip-icon"><svg><use href="#i-info"/></svg></span><p><strong>小提示</strong>　表格中写上「看上方」「看左侧」等指令，可在同一段文本中使用不同的计算方式。</p><button id="tip-help" aria-label="查看完整说明"><svg><use href="#i-arrow-right"/></svg></button></div>
+      </section>
+    </div>
+    <footer class="page-footer"><span>文档助手 <i>·</i> 让每一次整理，都更轻松。</span><span>无需上传 <i>·</i> 即时计算 <i>·</i> 自由复制</span></footer>
+  </main>
+  <section id="full-page-preview" hidden aria-label="整页预览">
+    <div class="full-page-toolbar">
+      <button id="back-to-editor" class="text-button"><svg><use href="#i-arrow-left"/></svg>返回编辑</button>
+      <span>整页预览 · 可使用浏览器整页截图保存</span>
+      <div class="full-table-controls"><span>表格位置</span><div class="full-table-align" role="group" aria-label="表格位置"><button data-full-table-align="left" class="active" aria-pressed="true">靠左</button><button data-full-table-align="center" aria-pressed="false">居中</button><button data-full-table-align="right" aria-pressed="false">靠右</button></div></div>
+      <label class="full-table-controls full-table-scale" for="full-table-size"><span>表格大小</span><input id="full-table-size" type="range" min="50" max="200" step="5" value="100"><output id="full-table-size-label" for="full-table-size" aria-live="polite">100%</output></label>
+    </div>
+    <div id="full-page-content" class="result-content full-page-content" data-table-align="left" aria-label="整页预览结果"></div>
+  </section>
+  <div id="toast" class="toast" role="status" hidden></div>
+  <dialog id="help-dialog">
+    <div class="dialog-heading"><span class="eyebrow">A LITTLE GUIDE</span><button id="close-help" aria-label="关闭说明">×</button></div><h2>你的文档，可以这样整理。</h2>
+    <p>输入文本后会立即处理。支持 Markdown 表格、从电子表格复制的制表符分隔数据，以及空格分隔的纯数字。直接输入 <code>0.050 0.048</code>，选择「看右侧」，即可得到 <code>-4.00%</code>；比较上下方时，将数字分别放在两行。</p>
+    <div class="guide-item"><span>01</span><div><h3>涨跌配色</h3><p><b class="positive">+120w/d、+30w、+12</b> 显示绿色；<b class="negative">-18w/d、-10w、-8</b> 显示红色。计算出的正、负百分比也会配色；原文中没有正负号的恢复率等百分比保留原色。「低 5pp」「高 2pp」中的数值按紧邻的方向词配色；显式正负号优先，单独的 5pp 保留原色。</p></div></div>
+    <div class="guide-item"><span>02</span><div><h3>方向决定比较基准</h3><p>看上方：(上 − 下) ÷ 下；看下方：(下 − 上) ÷ 上。看左侧：(左 − 右) ÷ 右；看右侧：(右 − 左) ÷ 左。多行或多列会逐对比较相邻数值。</p><p>上下比例：选中一方 ÷ (上 + 下)。除法：原数值 ÷ 指定除数。分母为零时显示「—」。</p></div></div>
+    <div class="guide-item"><span>03</span><div><h3>带上计算指令，一次处理多个表格</h3><p>在单元格中写「看上方」「看下方」「看左侧」「看右侧」「上方比例」「下方比例」或「除以 7」，即可覆盖侧栏设置。空白行分隔不同数据组。关闭自动识别后，统一使用侧栏设置。</p></div></div>
+    <div class="guide-item"><span>04</span><div><h3>把结果带到你的文档里</h3><p>预览模式下「复制结果」会同时复制表格格式和颜色，可粘贴到支持富文本的编辑器。Markdown 模式下会复制含颜色 span 的源码。导出的 .md 文件也包含颜色；具体显示效果取决于目标编辑器是否支持 HTML。</p></div></div>
+    <div class="guide-item"><span>05</span><div><h3>中英文符号互换</h3><p>在「输出选项 → 符号转换」中选择方向，逗号、句号、分号、冒号、问号、感叹号、括号和成对引号会自动转换。小数、千分位数字、网址、邮箱及代码会保留原有格式。</p></div></div>
+    <button id="got-it" class="copy-button">开始整理 <svg><use href="#i-arrow-right"/></svg></button>
+  </dialog>
+  <script type="module">const { convertPunctuation } = (() => {
+const chinese = {
+  ',': '，', '.': '。', ';': '；', ':': '：', '?': '？', '!': '！',
+  '(': '（', ')': '）', '[': '【', ']': '】', '．': '。', '［': '【', '］': '】'
+};
+const english = {
+  '，': ',', '、': ',', '。': '.', '．': '.', '；': ';', '：': ':', '？': '?', '！': '!',
+  '（': '(', '）': ')', '【': '[', '】': ']', '［': '[', '］': ']',
+  '“': '"', '”': '"', '＂': '"', '‘': "'", '’': "'", '＇': "'", '「': '"', '」': '"', '『': '"', '』': '"'
+};
+
+// Keep data and Markdown syntax intact; only ordinary prose is converted.
+function protectedCharacters(text) {
+  const protectedAt = new Uint8Array(text.length);
+  const protect = (start, end) => protectedAt.fill(1, start, end);
+  const matches = pattern => {
+    for (const match of text.matchAll(pattern)) protect(match.index, match.index + match[0].length);
+  };
+
+  const fences = /^ {0,3}(`{3,}|~{3,})[^\n]*(?:\n|$)/gm;
+  let opening;
+  while ((opening = fences.exec(text))) {
+    const marker = opening[1];
+    const closing = new RegExp(`^ {0,3}${marker[0]}{${marker.length},}[ \\t]*(?:\\n|$)`, 'gm');
+    closing.lastIndex = fences.lastIndex;
+    const end = closing.exec(text);
+    const finish = end ? closing.lastIndex : text.length;
+    protect(opening.index, finish);
+    fences.lastIndex = finish;
+  }
+  matches(/(`+)[\s\S]*?\1(?!`)/g);
+  matches(/\\[^\p{L}\p{N}\s]/gu);
+  matches(/^[ \t]{0,3}\[[^\]\n]+\]:[^\n]*/gm);
+  matches(/^([ \t]*(?:>\s*)*)\d+[.)](?=\s)/gm);
+  matches(/^[ \t]*(?:>\s*)*[-+*]\s+\[[ xX]\](?=\s|$)/gm);
+  matches(/<(?:[a-z][a-z\d+.-]*:[^<>\n]*|[^<>\s]+@[^<>\s]+)>/gi);
+  const normalizeReference = label => label.trim().replace(/\s+/g, ' ').toLowerCase();
+  const references = new Set([...text.matchAll(/^[ \t]{0,3}\[([^\]\n]+)\]:/gm)].map(match => normalizeReference(match[1])));
+
+  for (const line of text.matchAll(/[^\n]+/g)) {
+    const cells = line[0].trim().replace(/^\||\|$/g, '').split('|');
+    if (line[0].includes('|') && cells.every(cell => /^\s*:?-{3,}:?\s*$/.test(cell))) {
+      protect(line.index, line.index + line[0].length);
+    }
+  }
+
+  // Links and images retain their brackets and destinations, while labels remain prose.
+  const closingBracket = (start, open, close) => {
+    let depth = 0;
+    for (let i = start; i < text.length; i++) {
+      if (text[i] === '\\') { i++; continue; }
+      if (text[i] === open) depth++;
+      else if (text[i] === close && --depth === 0) return i;
+      if (text[i] === '\n' && open === '[') return -1;
+    }
+    return -1;
+  };
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] !== '[' || protectedAt[i]) continue;
+    const labelEnd = closingBracket(i, '[', ']');
+    if (labelEnd < 0) continue;
+    const open = text[labelEnd + 1];
+    if (open !== '(' && open !== '[') {
+      if (references.has(normalizeReference(text.slice(i + 1, labelEnd)))) protect(text[i - 1] === '!' ? i - 1 : i, labelEnd + 1);
+      continue;
+    }
+    const targetEnd = closingBracket(labelEnd + 1, open, open === '(' ? ')' : ']');
+    if (targetEnd < 0) continue;
+    protect(text[i - 1] === '!' ? i - 1 : i, i + 1);
+    protect(labelEnd, targetEnd + 1);
+  }
+
+  for (const match of text.matchAll(/(?:https?:\/\/|ftp:\/\/|www\.)[^\s<>"'`，。；：！？、（）【】“”‘’]+/gi)) {
+    let value = match[0].replace(/[.,;:!?]+$/, '');
+    for (const [open, close] of [['(', ')'], ['[', ']'], ['{', '}']]) {
+      while (value.endsWith(close) && value.split(close).length > value.split(open).length) value = value.slice(0, -1);
+    }
+    protect(match.index, match.index + value.length);
+  }
+  matches(/[a-z\d.!#$%&'*+/=?^_`{|}~-]+@[a-z\d-]+(?:\.[a-z\d-]+)+/gi);
+  matches(/(?<![a-z\d_@])[a-z\d_-]+(?:\.[a-z\d_-]+)+(?![a-z\d_])/gi);
+  matches(/\d{4}([./-])\d{1,2}\1\d{1,2}/g);
+  matches(/(?<!\d)\d{1,2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?!\d)/g);
+  matches(/[+-]?(?:\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+\.\d+|\.\d+)(?:[eE][+-]?\d+)?/g);
+  return protectedAt;
+}
+
+function convertPunctuation(text, mode = 'none') {
+  text = String(text ?? '');
+  if (mode !== 'zh' && mode !== 'en') return text;
+  const protectedAt = protectedCharacters(text);
+  const replacements = new Map();
+  if (mode === 'zh') {
+    for (const [quotes, opening, closing] of [['"＂', '“', '”'], ["'＇", '‘', '’']]) {
+      let pending = null;
+      for (let i = 0; i < text.length; i++) {
+        if (protectedAt[i] || !quotes.includes(text[i])) continue;
+        // Apostrophes inside words, such as don't and Alice's, are not quotes.
+        if (quotes.includes("'") && /[a-z\d]/i.test(text[i - 1] || '') && /[a-z\d]/i.test(text[i + 1] || '')) continue;
+        if (pending === null) pending = i;
+        else { replacements.set(pending, opening); replacements.set(i, closing); pending = null; }
+      }
+    }
+  }
+  const symbols = mode === 'zh' ? chinese : english;
+  return Array.from({ length: text.length }, (_, i) => protectedAt[i] ? text[i] : replacements.get(i) ?? symbols[text[i]] ?? text[i]).join('');
+}
+
+return { convertPunctuation };
+})();
+const defaults = { color: true, mode: 'growth', direction: 'up', ratioDirection: 'down', divisor: 7, precision: 2, divisionPrecision: 4, autoDetect: true, punctuation: 'none', unsignedColor: 'none', cellAlign: 'auto', mathMode: 'none', tableDetect: true };
+const escapeHtml = text => String(text).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+function numberValue(raw) {
+  const text = String(raw).trim().replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 65248)).replace(/[−－]/g, '-').replace(/＋/g, '+');
+  const match = text.match(/^([+-]?(?:(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?)(w|万|亿)?(?:\/d)?$/i);
+  if (!match) return null;
+  const multiplier = match[2] === '亿' ? 1e8 : match[2] ? 1e4 : 1;
+  const value = Number(match[1].replaceAll(',', '')) * multiplier;
+  return Number.isFinite(value) ? value : null;
+}
+function splitRow(line) {
+  let text = line.trim();
+  if (text.startsWith('|')) text = text.slice(1);
+  if (text.endsWith('|') && !text.endsWith('\\|')) text = text.slice(0, -1);
+  const cells = []; let cell = ''; let code = false;
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] === '\\' && text[i + 1] === '|') { cell += '|'; i++; }
+    else if (text[i] === '`') { code = !code; cell += text[i]; }
+    else if (text[i] === '|' && !code) { cells.push(cell.trim()); cell = ''; }
+    else cell += text[i];
+  }
+  cells.push(cell.trim()); return cells;
+}
+function numericTextRow(line) {
+  const cells = line.trim().split(/\s+/u);
+  return cells.every(cell => numberValue(cell) !== null) ? cells : null;
+}
+function parseDocument(text, { recognizeNumericText = true } = {}) {
+  const lines = text.replace(/\r\n?/g, '\n').split('\n');
+  const blocks = []; let prose = []; let fenced = false;
+  const flush = () => { if (prose.length) { blocks.push({ type: 'text', text: prose.join('\n'), literal: fenced }); prose = []; } };
+  for (let i = 0; i < lines.length;) {
+    if (/^\s*```/.test(lines[i])) { flush(); fenced = !fenced; prose.push(lines[i++]); continue; }
+    if (!fenced && recognizeNumericText) {
+      const cells = numericTextRow(lines[i]);
+      const nextCells = i + 1 < lines.length ? numericTextRow(lines[i + 1]) : null;
+      const instruction = directive([lines[i].trim()]);
+      if ((cells && (cells.length > 1 || nextCells)) || (instruction && nextCells)) {
+        flush(); const rows = [];
+        while (i < lines.length) {
+          const numeric = numericTextRow(lines[i]);
+          if (numeric) { numeric.line = i; rows.push(numeric); }
+          else if (directive([lines[i].trim()]) && i + 1 < lines.length && numericTextRow(lines[i + 1])) rows.push([lines[i].trim()]);
+          else break;
+          i++;
+        }
+        const width = Math.max(...rows.map(row => row.length));
+        rows.forEach(row => { while (row.length < width) row.push(''); });
+        blocks.push({ type: 'table', rows, separator: -1, kind: 'space', start: i - rows.length, end: i });
+        continue;
+      }
+    }
+    const isTableLine = line => line.includes('|') && (splitRow(line).length > 1 || /^\s*\|.*\|\s*$/.test(line));
+    const isPipe = !fenced && isTableLine(lines[i]);
+    const isTsv = !fenced && lines[i].includes('\t') && lines[i + 1]?.includes('\t');
+    if (!isPipe && !isTsv) { prose.push(lines[i++]); continue; }
+    flush(); const rows = []; let separator = -1; const start = i;
+    while (i < lines.length && (isTsv ? lines[i].includes('\t') : isTableLine(lines[i]))) {
+      const cells = isTsv ? lines[i].split('\t').map(x => x.trim()) : splitRow(lines[i]);
+      if (cells.every(x => /^:?-{3,}:?$/.test(x))) separator = rows.length;
+      else { cells.line = i; rows.push(cells); }
+      i++;
+    }
+    if (!rows.length) { blocks.push({ type: 'text', text: lines.slice(start, i).join('\n') }); continue; }
+    const width = Math.max(...rows.map(x => x.length), 1);
+    rows.forEach(row => { while (row.length < width) row.push(''); });
+    blocks.push({ type: 'table', rows, separator, kind: isTsv ? 'tsv' : 'pipe', start, end: i });
+  }
+  flush(); return blocks;
+}
+function directive(row) {
+  for (const cell of row) {
+    const text = cell.replace(/\s/g, '');
+    if (/^看?上方$/.test(text)) return { mode: 'growth', direction: 'up' };
+    if (/^看?下方$/.test(text)) return { mode: 'growth', direction: 'down' };
+    if (/^看?左(?:侧|方)?$/.test(text)) return { mode: 'growth', direction: 'left' };
+    if (/^看?右(?:侧|方)?$/.test(text)) return { mode: 'growth', direction: 'right' };
+    if (/^上方比例$/.test(text)) return { mode: 'ratio', ratioDirection: 'up' };
+    if (/^下方比例$/.test(text)) return { mode: 'ratio', ratioDirection: 'down' };
+    const division = text.match(/^除以(.+)$/);
+    if (division && numberValue(division[1]) !== null) return { mode: 'divide', divisor: numberValue(division[1]) };
+  }
+  return null;
+}
+const numericCells = row => row.map((cell, col) => ({ col, value: numberValue(cell) })).filter(x => x.value !== null);
+const isEmptyRow = row => row.every(cell => !cell.trim());
+function formatted(value, precision, percent, stats) {
+  stats.calculations++;
+  if (!Number.isFinite(value)) { stats.warnings.add('分母为 0 或结果超出数值范围的计算显示为「—」。'); return '—'; }
+  const output = (percent ? value * 100 : value).toFixed(precision);
+  return (Number(output) === 0 ? Math.abs(Number(output)).toFixed(precision) : output) + (percent ? '%' : '');
+}
+function calculateSection(source, settings, stats, generatedPercentCells) {
+  const rows = source.map(row => [...row]);
+  if (settings.mode === 'none') return rows;
+  if (settings.mode === 'divide' || (settings.mode === 'growth' && ['left', 'right'].includes(settings.direction))) {
+    for (const row of rows) {
+      const numbers = numericCells(row);
+      if (!numbers.length || (settings.mode === 'growth' && numbers.length < 2)) continue;
+      const answers = [];
+      if (settings.mode === 'divide') {
+        for (const number of numbers) answers.push(formatted(number.value / settings.divisor, settings.divisionPrecision, false, stats));
+      } else {
+        for (let i = 1; i < numbers.length; i++) {
+          const left = numbers[i - 1].value, right = numbers[i].value;
+          const base = settings.direction === 'left' ? right : left;
+          const target = settings.direction === 'left' ? left : right;
+          answers.push(formatted((target - base) / base, settings.precision, true, stats));
+        }
+      }
+      let position = numbers.at(-1).col + 1;
+      const generatedColumns = new Set();
+      for (const answer of answers) {
+        while (position < row.length && row[position].trim()) position++;
+        if (settings.mode === 'growth') generatedColumns.add(position);
+        row[position++] = answer;
+      }
+      if (generatedColumns.size) generatedPercentCells.set(row, generatedColumns);
+    }
+    return rows;
+  }
+  const output = []; let previous = null;
+  for (const row of rows) {
+    output.push(row); const numbers = numericCells(row);
+    if (!numbers.length) continue;
+    if (previous) {
+      const common = previous.numbers.filter(a => numbers.some(b => b.col === a.col));
+      let pairs = common.map(a => ({ top: a, bottom: numbers.find(b => b.col === a.col), col: a.col }));
+      // Named examples may place the two operands in different columns.
+      if (!pairs.length && previous.numbers.length === numbers.length) pairs = previous.numbers.map((a, i) => ({ top: a, bottom: numbers[i], col: a.col }));
+      if (pairs.length) {
+        const summary = Array(Math.max(...rows.map(r => r.length))).fill('');
+        for (const { top, bottom, col } of pairs) {
+          let value;
+          if (settings.mode === 'ratio') value = (settings.ratioDirection === 'up' ? top.value : bottom.value) / (top.value + bottom.value);
+          else {
+            const base = settings.direction === 'up' ? bottom.value : top.value;
+            const target = settings.direction === 'up' ? top.value : bottom.value;
+            value = (target - base) / base;
+          }
+          summary[col] = formatted(value, settings.precision, true, stats);
+        }
+        if (summary[0] === '' && !pairs.some(x => x.col === 0)) summary[0] = settings.mode === 'ratio' ? '占比' : '增量';
+        generatedPercentCells.set(summary, new Set(pairs.map(pair => pair.col)));
+        output.push(summary);
+      }
+    }
+    previous = { numbers };
+  }
+  return output;
+}
+function transformTable(block, settings, stats) {
+  if (settings.mode === 'none') return block;
+  const generatedPercentCells = new Map();
+  const sections = []; let current = []; let local = settings;
+  const flush = () => { if (current.length) sections.push(calculateSection(current, local, stats, generatedPercentCells)); current = []; };
+  for (const row of block.rows) {
+    const config = settings.autoDetect ? directive(row) : null;
+    if (config) { flush(); local = { ...settings, ...config }; }
+    if (isEmptyRow(row)) { flush(); const copy = [...row]; copy.line = row.line; sections.push([copy]); local = settings; }
+    else current.push(row);
+  }
+  flush(); const rows = sections.flat();
+  const width = Math.max(...rows.map(row => row.length), 1);
+  rows.forEach(row => { while (row.length < width) row.push(''); });
+  return { ...block, rows, generatedPercentColumns: rows.map(row => [...(generatedPercentCells.get(row) || [])]) };
+}
+const signPattern = /(?<![A-Za-z0-9_.+-])([+＋−－-])((?:\d+(?:,\d{3})*(?:\.\d+)?|\.\d+|x{1,3})(?:[eE][+-]?\d+)?)(w(?:\/d)?|万(?:\/d)?|亿(?:\/d)?|元|%|％)?(?![A-Za-z0-9_./-])/giu;
+const ppPattern = /(?<![A-Za-z0-9_.+＋−－-])(?:([+＋−－-])[^\S\r\n\u2028\u2029]*)?(?:\d+(?:,\d{3})*(?:\.\d+)?|\.\d+)(?:[eE][+-]?\d+)?[^\S\r\n\u2028\u2029]*pp(?![A-Za-z0-9_/-]|\.[A-Za-z0-9_])/giu;
+const ppDirection = /(高于|提高|上升|增加|多于|低于|降低|下降|减少|少于|高|低|多|少)[^\S\r\n\u2028\u2029]*$/u;
+const positivePpWords = new Set(['高', '高于', '提高', '上升', '增加', '多', '多于']);
+const confidenceMark = /^[^\S\r\n]*[\uFF08(]\u7F6E\u4FE1[\uFF09)]/u;
+function colorTokens(raw, enabled, markup, ppEnabled = true, generatedPercent = false, unsignedColor = 'none') {
+  if (!enabled) return markup ? escapeHtml(raw) : raw;
+  let result = '', cursor = 0;
+  const tokens = [...String(raw).matchAll(signPattern)];
+  // Only percentages created by a calculation receive positive color without a + sign.
+  if (generatedPercent) {
+    const percentage = /(?<![A-Za-z0-9_.+＋−－-])(\d+(?:\.\d+)?)[%％](?![A-Za-z0-9_])/gu;
+    for (const match of String(raw).matchAll(percentage)) if (Number(match[1]) > 0) tokens.push({ 0: match[0], index: match.index, positive: true });
+  }
+  const code = ppEnabled ? [...String(raw).matchAll(/(`+)[\s\S]*?\1(?!`)/g)] : [];
+  const codePp = [];
+  for (const match of String(raw).matchAll(ppPattern)) {
+    if (!ppEnabled || code.some(part => match.index >= part.index && match.index < part.index + part[0].length)) {
+      codePp.push(match); continue;
+    }
+    const prefix = raw.slice(0, match.index);
+    const direction = prefix.match(ppDirection);
+    // Check the whole comparative word so a negated long word cannot fall back to 高/低/少.
+    const word = direction && !/[最不非]/u.test(prefix[direction.index - 1] || '') ? direction[1] : null;
+    if (!match[1] && !word) continue;
+    tokens.push({ 0: match[0], index: match.index, positive: match[1] ? ['+', '＋'].includes(match[1]) : positivePpWords.has(word) });
+  }
+  if (ppEnabled && ['red', 'green'].includes(unsignedColor)) {
+    const protectedParts = [...String(raw).matchAll(/(`+)[\s\S]*?\1(?!`)|https?:\/\/[^\s<>]+|[\w.+-]+@[\w.-]+\.[A-Za-z]+|\b\d{4}[-/]\d{1,2}[-/]\d{1,2}\b/g)];
+    const unsigned = /(?<![A-Za-z0-9_.+＋−－\-/])(?:\d+(?:,\d{3})*(?:\.\d+)?|\.\d+)(?:[eE][+-]?\d+)?(?:w(?:\/d)?|万(?:\/d)?|亿(?:\/d)?|元|[%％]|[^\S\r\n]*pp)?(?![A-Za-z0-9_./-])/giu;
+    for (const match of String(raw).matchAll(unsigned)) {
+      const overlaps = part => match.index < part.index + part[0].length && match.index + match[0].length > part.index;
+      if (tokens.some(overlaps) || protectedParts.some(overlaps)) continue;
+      tokens.push({ 0: match[0], index: match.index, positive: unsignedColor === 'green' });
+    }
+  }
+  // A signed pp amount can overlap an existing signed-number match before its space.
+  tokens.sort((a, b) => a.index - b.index || b[0].length - a[0].length);
+  for (const token of tokens) {
+    if (token.index < cursor) continue;
+    // Suppress only legacy number matches inside a protected pp code amount.
+    if (codePp.some(part => token.index >= part.index && token.index < part.index + part[0].length)) continue;
+    const positive = token.positive ?? ['+', '＋'].includes(token[1]);
+    const before = raw.slice(cursor, token.index);
+    result += markup ? escapeHtml(before) : before;
+    const style = positive ? '#13845b' : '#d34444';
+    // A trailing confidence mark shares the number's color and weight.
+    const mark = raw.slice(token.index + token[0].length).match(confidenceMark)?.[0] || '';
+    result += `<span style="color:${style};font-weight:600"${markup ? ` class="${positive ? 'positive' : 'negative'}"` : ''}>${escapeHtml(token[0] + mark)}</span>`;
+    cursor = token.index + token[0].length + mark.length;
+  }
+  const rest = raw.slice(cursor); return result + (markup ? escapeHtml(rest) : rest);
+}
+function inline(raw, enabled, ppEnabled = true, generatedPercent = false, unsignedColor = 'none') {
+  // Code is displayed literally; arbitrary HTML is escaped before rendering.
+  return raw.split(/(`[^`]*`)/g).map(part => part.startsWith('`') && part.endsWith('`')
+    ? `<code>${escapeHtml(part.slice(1, -1))}</code>`
+    : colorTokens(part, enabled, true, ppEnabled, generatedPercent, unsignedColor).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')).join('');
+}
+function renderDocument(blocks, settings) {
+  let tableIndex = -1;
+  return blocks.map(block => {
+    if (block.type === 'text') return block.text.split('\n').map(line => {
+      const heading = line.match(/^(#{1,3})\s+(.+)$/);
+      return heading ? `<h${heading[1].length + 1}>${inline(heading[2], settings.color, !block.literal, false, settings.unsignedColor)}</h${heading[1].length + 1}>` : `<div class="text-line">${inline(line, settings.color, !block.literal, false, settings.unsignedColor) || '<br>'}</div>`;
+    }).join('');
+    tableIndex++;
+    let used = 1; block.rows.forEach(row => row.forEach((cell, col) => { if (String(cell).trim()) used = Math.max(used, col + 1); }));
+    block = { ...block, rows: block.rows.map(row => Object.assign(row.slice(0, used), { line: row.line })) };
+    const hasHeader = block.separator === 1 && !block.rows[0].some(cell => numberValue(cell) !== null);
+    const rowHtml = (row, index) => `<tr${row.some(cell => /^-?\d+(?:\.\d+)?%$/.test(cell)) && row.every(cell => numberValue(cell) === null) ? ' class="calculated-row"' : ''}>${row.map((cell, col) => {
+      const tag = hasHeader && index === 0 ? 'th' : 'td';
+      const remove = index === 0 ? `<button class="col-delete" data-col="${col}" title="删除这一列（左侧原文同步删除）" aria-label="删除第 ${col + 1} 列">×</button>` : '';
+      const removeRow = col === 0 && row.line !== undefined ? `<button class="row-delete" data-line="${row.line}" title="删除这一行（左侧原文同步删除）" aria-label="删除这一行">×</button>` : '';
+      return `<${tag}${tag === 'th' ? ' scope="col"' : ''}${remove || removeRow ? ' class="has-col-delete"' : ''}>${remove}${removeRow}${inline(cell, settings.color, true, block.generatedPercentColumns?.[index]?.includes(col), settings.unsignedColor) || '<span class="blank-cell">&nbsp;</span>'}</${tag}>`;
+    }).join('')}</tr>`;
+    return `<div class="table-wrap" data-table="${tableIndex}"><table${settings.cellAlign === 'auto' ? '' : ` class="align-${settings.cellAlign}"`}>${hasHeader ? `<thead>${rowHtml(block.rows[0], 0)}</thead>` : ''}<tbody>${block.rows.slice(hasHeader ? 1 : 0).map((row, i) => rowHtml(row, i + (hasHeader ? 1 : 0))).join('')}</tbody></table></div>`;
+  }).join('');
+}
+function toMarkdown(blocks, color = false, unsignedColor = 'none', cellAlign = 'auto') {
+  return blocks.map(block => {
+    if (block.type === 'text') return color ? colorTokens(block.text, true, false, !block.literal, false, unsignedColor) : block.text;
+    const row = (cells, index) => '| ' + cells.map((cell, col) => (color ? colorTokens(cell, true, false, true, block.generatedPercentColumns?.[index]?.includes(col), unsignedColor) : cell).replaceAll('|', '\\|').replaceAll('\n', ' ')).join(' | ') + ' |';
+    return [row(block.rows[0], 0), row(block.rows[0].map(() => ({ auto: '---', left: ':---', center: ':---:', right: '---:' })[cellAlign])), ...block.rows.slice(1).map((cells, index) => row(cells, index + 1))].join('\n');
+  }).join('\n\n');
+}
+// Weekly-report outlines: a numbered title followed by indented "a." items is bolded,
+// and each of those items gets a bold label before its colon, e.g. "a. **Label**: text".
+const outlineTitle = /^(\s*\d+[.\uFF0E\u3001](?!\d)\s*)(.*\S)/u;
+const outlineItem = /^(\s+)[a-z][.\uFF0E\u3001\u3002]\s*/u;
+const outlineLabel = /^[^\uFF1A:\uFF0C,\u3002\uFF1B;*`]{1,20}?(?=\s*(?:\uFF1A|:(?![\d/])))/u;
+function boldOutline(text) {
+  const lines = text.split('\n'); let itemIndent = -1;
+  return lines.map((line, i) => {
+    const title = line.match(outlineTitle);
+    if (title) {
+      const item = lines.find((next, j) => j > i && next.trim())?.match(outlineItem);
+      itemIndent = item && item[1].length > title[1].search(/\S/) ? item[1].length : -1;
+      return itemIndent < 0 || /[*`]/.test(title[2]) ? line : `${title[1]}**${title[2]}**`;
+    }
+    const item = line.match(outlineItem);
+    if (item && item[1].length === itemIndent) {
+      const rest = line.slice(item[0].length), label = rest.match(outlineLabel)?.[0];
+      return label ? `${item[0]}**${label}**${rest.slice(label.length)}` : line;
+    }
+    if (/^\S/.test(line)) itemIndent = -1;
+    return line;
+  }).join('\n');
+}
+const mathPattern = /\\\[([\s\S]*?)\\\]|\\\(([\s\S]*?)\\\)/g;
+// Formulas are swapped for placeholders so punctuation conversion cannot touch their commas.
+function convertMath(text, mode) {
+  if (mode !== 'inline' && mode !== 'block') return { text, restore: value => value };
+  const saved = [], mark = mode === 'block' ? '$$' : '$';
+  const replaced = text.replace(mathPattern, (match, display, inline) => {
+    saved.push(mark + (display ?? inline).trim().replace(/\s*\n\s*/g, ' ') + mark);
+    return '\uE000' + (saved.length - 1) + '\uE001';
+  });
+  return { text: replaced, restore: value => value.replace(/\uE000(\d+)\uE001/g, (match, i) => saved[i]) };
+}
+function processDocument(input, options = {}) {
+  const settings = { ...defaults, ...options };
+  settings.precision = Math.max(0, Math.min(6, Number(settings.precision) || 0));
+  settings.cellAlign = ['left', 'center', 'right'].includes(settings.cellAlign) ? settings.cellAlign : 'auto';
+  settings.mathMode = ['inline', 'block'].includes(settings.mathMode) ? settings.mathMode : 'none';
+  settings.divisionPrecision = Math.max(0, Math.min(8, Number(settings.divisionPrecision) || 0));
+  settings.divisor = Number(settings.divisor);
+  const stats = { tables: 0, calculations: 0, colors: 0, warnings: new Set() };
+  const math = convertMath(input, settings.mathMode);
+  const convertedInput = math.restore(convertPunctuation(math.text, settings.punctuation));
+  const parsed = settings.tableDetect === false ? [{ type: 'text', text: convertedInput }] : parseDocument(convertedInput, { recognizeNumericText: settings.mode !== 'none' });
+  const blocks = parsed.map(block => {
+    if (block.type !== 'table') return block.literal ? block : { ...block, text: boldOutline(block.text) };
+    stats.tables++; return transformTable(block, settings, stats);
+  });
+  const html = renderDocument(blocks, settings);
+  stats.colors = (html.match(/class="(?:positive|negative)"/g) || []).length;
+  if (stats.tables && settings.mode !== 'none' && !stats.calculations) stats.warnings.add('未找到可计算的数值对。增量需要两行或两列数值；已有百分比不会作为计算输入。');
+  return { blocks, html, markdown: toMarkdown(blocks, false, 'none', settings.cellAlign), coloredMarkdown: toMarkdown(blocks, settings.color, settings.unsignedColor, settings.cellAlign), stats: { ...stats, warnings: [...stats.warnings] } };
+}
+
+const $ = id => document.getElementById(id);
+const examples = {
+  overview: `## 每日数据记录\n\n今日新增 +120w/d，昨日调整 -15w/d\n累计变化 +60w，成本变化 -8w\n转化率较昨日低 3pp，留存率较目标高 2pp\n\n### 两组数据的增量空间\n\n| 12000 | 1500 | 800000 | 0.1250 | 320.5000 |\n| ----- | ---- | ------ | ------ | -------- |\n| 15000 | 1800 | 900000 | 0.1200 | 300.0000 |`,
+  vertical: `## 上下方增量\n\n| 看下方 | A组 | 50000 |   |\n| --- | --- | --- | --- |\n| B组 | 40000 |   |   |\n|   |   |   |   |\n| 看上方 | A组 | 120000 |   |\n| B组 | 100000 |   |   |`,
+  horizontal: `## 左右侧增量\n\n| 看左侧 | B组 | A组 |   |\n| --- | --- | --- | --- |\n| 0.050 | 0.048 |   |   |\n|   |   |   |   |\n| 看右侧 | A组 | B组 |   |\n| 0.050 | 0.048 |   |   |`,
+  numericRight: '0.050 0.048',
+  ratio: `## 上下方比例\n\n| 下方比例 | 数量 |\n| --- | --- |\n| 9000 |   |\n| 1000 |   |\n|   |   |\n| 上方比例 | 数量 |\n| 9000 |   |\n| 1000 |   |`,
+  divide: `## 按 7 天均分\n\n| 除以 7 | 7000 |   |\n| --- | --- | --- |`,
+  punctuation: `他说: "你好, 世界! 今天进度如何?"\n备注: (先确认; 再执行), [待处理].\n数值 0.050 / 0.048, 金额 1,234.56.\n网址 https://example.com/report?a=1&b=2`
+};
+let settings = { ...defaults }, view = 'preview', result, timer, toastTimer, editorScroll = 0;
+const storageKey = 'document-assistant-v1';
+let initialInput = examples.overview;
+try {
+  const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
+  if (saved) {
+    if (typeof saved.input === 'string') initialInput = saved.input;
+    if (saved.settings) settings = { ...defaults, ...saved.settings };
+  }
+} catch { /* Browsers may disable local storage. */ }
+$('input').value = initialInput;
+function toast(text) { $('toast').textContent = text; $('toast').hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => $('toast').hidden = true, 3500); }
+function save() {
+  try { localStorage.setItem(storageKey, JSON.stringify({ input: $('input').value, settings })); }
+  catch { document.querySelector('.saved-note').textContent = '当前浏览器未允许保存'; }
+}
+function syncControls() {
+  $('color-toggle').checked = settings.color;
+  $('auto-detect').checked = settings.autoDetect;
+  $('table-detect').checked = settings.tableDetect;
+  document.querySelectorAll('[data-unsigned]').forEach(b => { const on = b.dataset.unsigned === settings.unsignedColor; b.classList.toggle('active', on); b.setAttribute('aria-pressed', on); });
+  document.querySelectorAll('[data-punct]').forEach(b => { const on = b.dataset.punct === settings.punctuation; b.classList.toggle('active', on); b.setAttribute('aria-pressed', on); });
+  document.querySelectorAll('[data-cell-align]').forEach(b => { const on = b.dataset.cellAlign === settings.cellAlign; b.classList.toggle('active', on); b.setAttribute('aria-pressed', on); });
+  document.querySelectorAll('[data-math]').forEach(b => { const on = b.dataset.math === settings.mathMode; b.classList.toggle('active', on); b.setAttribute('aria-pressed', on); });
+  $('precision').max = settings.mode === 'divide' ? 8 : 6;
+  $('divisor').value = settings.divisor;
+  $('precision').value = settings.mode === 'divide' ? settings.divisionPrecision : settings.precision;
+  $('precision-label').textContent = settings.mode === 'divide' ? '计算结果小数位' : '百分比小数位';
+  document.querySelectorAll('[data-mode]').forEach(button => { const active = button.dataset.mode === settings.mode; button.classList.toggle('active', active); button.setAttribute('aria-pressed', active); });
+  document.querySelectorAll('[data-direction]').forEach(button => { const active = button.dataset.direction === settings.direction; button.classList.toggle('active', active); button.setAttribute('aria-pressed', active); });
+  document.querySelectorAll('[data-ratio]').forEach(button => { const active = button.dataset.ratio === settings.ratioDirection; button.classList.toggle('active', active); button.setAttribute('aria-pressed', active); });
+  ['growth', 'ratio', 'divide'].forEach(mode => $(`${mode}-settings`).hidden = settings.mode !== mode);
+  $('no-calculation').classList.toggle('active', settings.mode === 'none');
+  $('no-calculation').setAttribute('aria-pressed', settings.mode === 'none');
+  const formulas = { up: '(上方 − 下方) / 下方', down: '(下方 − 上方) / 上方', left: '(左侧 − 右侧) / 右侧', right: '(右侧 − 左侧) / 左侧' };
+  $('formula').hidden = settings.mode === 'none';
+  $('formula').querySelector('code').textContent = settings.mode === 'ratio' ? `${settings.ratioDirection === 'up' ? '上方' : '下方'} / (上方 + 下方)` : settings.mode === 'divide' ? `原数值 / ${settings.divisor}` : formulas[settings.direction];
+}
+function update() {
+  clearTimeout(timer);
+  const input = $('input').value;
+  result = processDocument(input, settings);
+  const empty = !input.trim();
+  $('preview').innerHTML = result.html;
+  $('markdown').value = result.coloredMarkdown;
+  $('preview').hidden = empty || view !== 'preview';
+  $('markdown').hidden = empty || view !== 'markdown';
+  $('empty-state').hidden = !empty;
+  $('char-count').textContent = input.length.toLocaleString('zh-CN');
+  $('table-count').textContent = result.stats.tables;
+  $('color-count').textContent = result.stats.colors;
+  $('calculation-count').textContent = result.stats.calculations;
+  const operations = [settings.color ? '配色' : '', settings.punctuation !== 'none' ? '符号转换' : '', result.stats.calculations ? '计算' : ''].filter(Boolean);
+  $('result-caption').textContent = empty ? '等待输入' : operations.length ? `已完成${operations.join('、')}` : '已处理文本';
+  $('warnings').textContent = result.stats.warnings.join(' ');
+  $('warnings').hidden = empty || !result.stats.warnings.length;
+  $('copy').disabled = empty;
+  $('download').disabled = empty;
+  $('copy-image').disabled = empty;
+  $('full-preview-button').disabled = empty;
+  $('result-state').lastChild.textContent = empty ? ' 等待输入' : ' 已同步';
+  save();
+}
+function changeSettings(values) { settings = { ...settings, ...values }; syncControls(); update(); }
+$('input').addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(update, 120); });
+$('input').addEventListener('keydown', event => {
+  if (event.key === 'Tab' && !event.shiftKey && !event.altKey && !event.ctrlKey && !event.metaKey && !event.isComposing) {
+    event.preventDefault();
+    const input = event.currentTarget;
+    // Native insertion preserves the editor's undo history where supported.
+    if (!document.execCommand('insertText', false, '\t')) input.setRangeText('\t', input.selectionStart, input.selectionEnd, 'end');
+    update();
+    return;
+  }
+  if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') { event.preventDefault(); update(); toast('处理结果已更新'); }
+});
+$('color-toggle').addEventListener('change', event => changeSettings({ color: event.target.checked }));
+$('auto-detect').addEventListener('change', event => changeSettings({ autoDetect: event.target.checked }));
+$('table-detect').addEventListener('change', event => changeSettings({ tableDetect: event.target.checked }));
+document.querySelectorAll('[data-unsigned]').forEach(b => b.addEventListener('click', () => changeSettings({ unsignedColor: b.dataset.unsigned })));
+document.querySelectorAll('[data-punct]').forEach(b => b.addEventListener('click', () => changeSettings({ punctuation: b.dataset.punct })));
+document.querySelectorAll('[data-cell-align]').forEach(b => b.addEventListener('click', () => changeSettings({ cellAlign: b.dataset.cellAlign })));
+document.querySelectorAll('[data-math]').forEach(b => b.addEventListener('click', () => changeSettings({ mathMode: b.dataset.math })));
+function setPrecision(value) {
+  const max = settings.mode === 'divide' ? 8 : 6;
+  const next = Math.max(0, Math.min(max, Math.round(Number(value) || 0)));
+  changeSettings({ [settings.mode === 'divide' ? 'divisionPrecision' : 'precision']: next });
+}
+$('precision').addEventListener('input', event => { if (event.target.value !== '') setPrecision(event.target.value); });
+$('precision').addEventListener('blur', event => setPrecision(event.target.value));
+$('precision').addEventListener('wheel', event => { if (document.activeElement !== event.target) return; event.preventDefault(); setPrecision(Number(event.target.value) + (event.deltaY < 0 ? 1 : -1)); }, { passive: false });
+document.querySelectorAll('[data-step]').forEach(b => b.addEventListener('click', () => setPrecision(Number($('precision').value) + Number(b.dataset.step))));
+$('divisor').addEventListener('input', event => {
+  const value = event.target.value === '' ? NaN : Number(event.target.value);
+  settings.divisor = value;
+  $('formula').querySelector('code').textContent = `原数值 / ${Number.isFinite(value) ? value : '请输入除数'}`;
+  update();
+});
+document.querySelectorAll('[data-mode]').forEach(button => button.addEventListener('click', () => changeSettings({ mode: button.dataset.mode })));
+document.querySelectorAll('[data-direction]').forEach(button => button.addEventListener('click', () => changeSettings({ direction: button.dataset.direction })));
+document.querySelectorAll('[data-ratio]').forEach(button => button.addEventListener('click', () => changeSettings({ ratioDirection: button.dataset.ratio })));
+$('no-calculation').addEventListener('click', () => changeSettings({ mode: settings.mode === 'none' ? 'growth' : 'none' }));
+document.querySelectorAll('[data-view]').forEach(button => button.addEventListener('click', () => {
+  view = button.dataset.view;
+  document.querySelectorAll('[data-view]').forEach(tab => { const active = tab.dataset.view === view; tab.classList.toggle('active', active); tab.setAttribute('aria-pressed', active); });
+  update();
+}));
+$('sample').addEventListener('change', event => {
+  const key = event.target.value;
+  if (!examples[key]) return;
+  $('input').value = examples[key];
+  if (key === 'punctuation') changeSettings({ punctuation: 'zh', mode: 'none' });
+  else changeSettings({ mode: key === 'ratio' ? 'ratio' : key === 'divide' ? 'divide' : 'growth', direction: key === 'numericRight' ? 'right' : key === 'horizontal' ? 'left' : 'up', autoDetect: true, divisor: 7 });
+  event.target.value = '';
+  toast('示例已载入，可直接编辑');
+});
+function deleteColumn(tableIndex, col) {
+  const input = $('input');
+  const lines = input.value.replace(/\r\n?/g, '\n').split('\n');
+  const table = parseDocument(input.value, { recognizeNumericText: settings.mode !== 'none' }).filter(block => block.type === 'table')[tableIndex];
+  if (!table || table.start === undefined) return toast('没找到这张表格对应的原文');
+  let changed = 0;
+  for (let i = table.start; i < table.end; i++) {
+    const line = lines[i];
+    if (table.kind === 'tsv') {
+      const cells = line.split('\t'); if (col >= cells.length) continue;
+      cells.splice(col, 1); lines[i] = cells.join('\t'); changed++;
+    } else if (table.kind === 'space') {
+      const indent = line.match(/^\s*/)[0]; const cells = line.trim().split(/\s+/u);
+      if (cells.length < 2 || col >= cells.length) continue;
+      cells.splice(col, 1); lines[i] = indent + cells.join(' '); changed++;
+    } else {
+      const cells = splitRow(line); if (col >= cells.length) continue;
+      cells.splice(col, 1);
+      lines[i] = `| ${cells.map(cell => cell.replaceAll('|', '\\|')).join(' | ')} |`; changed++;
+    }
+  }
+  if (!changed) return toast('这一列是计算生成的，原文里没有，无法删除');
+  // Replace through the editor so ⌘ / Ctrl + Z can undo the deletion.
+  input.focus(); input.select();
+  if (!document.execCommand('insertText', false, lines.join('\n'))) input.value = lines.join('\n');
+  update(); toast(`已删除第 ${col + 1} 列，⌘ / Ctrl + Z 可撤销`);
+}
+function deleteRow(lineIndex) {
+  const input = $('input');
+  const lines = input.value.replace(/\r\n?/g, '\n').split('\n');
+  if (!(lineIndex >= 0 && lineIndex < lines.length)) return toast('没找到这一行对应的原文');
+  const count = /^\s*\|?\s*:?-{3,}/.test(lines[lineIndex + 1] || '') ? 2 : 1; // header row takes its separator with it
+  lines.splice(lineIndex, count);
+  input.focus(); input.select();
+  if (!document.execCommand('insertText', false, lines.join('\n'))) input.value = lines.join('\n');
+  update(); toast('已删除这一行，⌘ / Ctrl + Z 可撤销');
+}
+$('table-edit').addEventListener('change', event => {
+  $('preview').classList.toggle('table-edit', event.target.checked);
+  if (event.target.checked && view !== 'preview') document.querySelector('[data-view="preview"]').click();
+  toast(event.target.checked ? '表格编辑模式已打开：鼠标移到表格上可删除行、列' : '表格编辑模式已关闭');
+});
+$('preview').addEventListener('click', event => {
+  if (!$('preview').classList.contains('table-edit')) return;
+  const rowButton = event.target.closest('.row-delete');
+  if (rowButton) return deleteRow(Number(rowButton.dataset.line));
+  const button = event.target.closest('.col-delete'); if (!button) return;
+  deleteColumn(Number(button.closest('.table-wrap').dataset.table), Number(button.dataset.col));
+});
+$('clear').addEventListener('click', () => { $('input').value = ''; update(); $('input').focus(); });
+$('full-preview-button').addEventListener('click', () => {
+  update();
+  if (!$('input').value.trim()) return;
+  editorScroll = window.scrollY;
+  $('full-page-content').innerHTML = result.html;
+  $('full-page-preview').hidden = false;
+  document.body.classList.add('full-page-preview-active');
+  window.scrollTo(0, 0);
+  $('back-to-editor').focus({ preventScroll: true });
+});
+function closeFullPreview() {
+  $('full-page-preview').hidden = true;
+  $('full-page-content').innerHTML = '';
+  document.body.classList.remove('full-page-preview-active');
+  window.scrollTo(0, editorScroll);
+  $('full-preview-button').focus({ preventScroll: true });
+}
+$('back-to-editor').addEventListener('click', closeFullPreview);
+document.querySelectorAll('[data-full-table-align]').forEach(button => button.addEventListener('click', () => {
+  $('full-page-content').dataset.tableAlign = button.dataset.fullTableAlign;
+  document.querySelectorAll('[data-full-table-align]').forEach(option => {
+    const active = option === button;
+    option.classList.toggle('active', active);
+    option.setAttribute('aria-pressed', active);
+  });
+}));
+$('full-table-size').addEventListener('input', event => {
+  const size = Number(event.target.value);
+  $('full-page-content').style.setProperty('--full-table-scale', size / 100);
+  $('full-table-size-label').value = `${size}%`;
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && !$('full-page-preview').hidden) { event.preventDefault(); closeFullPreview(); }
+});
+async function copyText(text) {
+  if (navigator.clipboard?.writeText) { try { await navigator.clipboard.writeText(text); return; } catch { /* Try the local-file fallback. */ } }
+  const temporary = document.createElement('textarea'); temporary.value = text; temporary.style.cssText = 'position:fixed;left:-9999px;top:0'; document.body.append(temporary); temporary.select();
+  const succeeded = document.execCommand('copy'); temporary.remove();
+  if (!succeeded) throw new Error('clipboard');
+}
+const styleProps = ['color','background-color','font-family','font-size','font-weight','line-height','text-align','white-space','padding-top','padding-right','padding-bottom','padding-left','margin-top','margin-bottom','border-top','border-right','border-bottom','border-left','border-radius','border-collapse','font-variant-numeric','overflow'];
+// Render the result offscreen and inline computed styles so pasted HTML and images keep table borders and colors.
+function renderStyled(tight = false) {
+  const host = document.createElement('div');
+  host.className = 'result-content';
+  host.style.cssText = 'position:fixed;left:-100000px;top:0;width:max-content;max-width:1600px;padding:20px 24px;background:#fff;overflow:visible;flex:none';
+  host.innerHTML = result.html;
+  host.querySelectorAll('.col-delete,.row-delete').forEach(button => button.remove());
+  document.body.append(host);
+  host.querySelectorAll('.table-wrap').forEach(wrap => { wrap.style.overflow = 'visible'; wrap.style.maxWidth = 'none'; wrap.style.width = 'max-content'; });
+  const all = [host, ...host.querySelectorAll('*')];
+  const styles = all.map(el => getComputedStyle(el));
+  const css = all.map((el, i) => styleProps.map(prop => `${prop}:${styles[i].getPropertyValue(prop)}`).join(';'));
+  all.forEach((el, i) => { el.setAttribute('style', css[i]); el.removeAttribute('class'); });
+  // Keep each table frame shrink-wrapped and clipped, so cells never spill past the rounded border.
+  host.querySelectorAll('table').forEach(table => { table.style.minWidth = '0'; table.parentElement.style.cssText += ';display:table;width:auto;overflow:hidden'; });
+  host.style.cssText += ';width:max-content';
+  if (tight) {
+    // Image export: keep only a thin white margin around the content.
+    host.style.padding = '4px';
+    const kids = [...host.querySelectorAll('*')].filter(el => el.parentElement === host);
+    kids.forEach(el => { el.style.marginTop = '0'; el.style.marginBottom = '0'; });
+    for (let i = 1; i < kids.length; i++) kids[i].style.marginTop = '8px';
+  }
+  const box = host.getBoundingClientRect(), width = Math.ceil(box.width), height = Math.ceil(box.height);
+  host.remove();
+  host.style.position = ''; host.style.left = ''; host.style.top = '';
+  return { host, width, height };
+}
+// Some rich-text editors drop font-weight 600 on paste, so bold spans also get a <strong>.
+function wrapBold(host) {
+  host.querySelectorAll('span').forEach(span => {
+    if (!(Number(span.style.fontWeight) >= 600)) return;
+    const strong = document.createElement('strong'); strong.append(...span.childNodes); span.append(strong);
+  });
+  return host;
+}
+async function resultToPng() {
+  const { host, width, height } = renderStyled(true);
+  const scale = Math.max(2, window.devicePixelRatio || 1);
+  host.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+  const xhtml = new XMLSerializer().serializeToString(host);
+  // Size the SVG at the output resolution so lines are rasterized sharp instead of upscaled from 1x.
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width * scale}" height="${height * scale}" viewBox="0 0 ${width} ${height}"><foreignObject width="${width}" height="${height}">${xhtml}</foreignObject></svg>`;
+  const image = new Image();
+  image.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  await image.decode();
+  const canvas = document.createElement('canvas');
+  canvas.width = width * scale; canvas.height = height * scale;
+  const context = canvas.getContext('2d');
+  context.fillStyle = '#fff'; context.fillRect(0, 0, canvas.width, canvas.height); context.drawImage(image, 0, 0, canvas.width, canvas.height);
+  return new Promise((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('png')), 'image/png'));
+}
+window.__resultToPng = resultToPng;
+$('copy-image').addEventListener('click', async () => {
+  update();
+  if (!$('input').value.trim()) return;
+  try {
+    const png = resultToPng();
+    if (!navigator.clipboard?.write || typeof ClipboardItem === 'undefined') throw new Error('clipboard');
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': png })]);
+    toast('已复制为图片，可直接粘贴');
+  } catch {
+    try {
+      const url = URL.createObjectURL(await resultToPng());
+      const link = document.createElement('a'); link.href = url; link.download = '文档助手-处理结果.png'; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+      toast('浏览器不允许复制图片，已改为下载 PNG');
+    } catch { toast('图片生成失败，请改用复制结果'); }
+  }
+});
+$('copy').addEventListener('click', async () => {
+  update();
+  try {
+    if (view === 'preview' && navigator.clipboard?.write && typeof ClipboardItem !== 'undefined') {
+      try {
+        await navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([wrapBold(renderStyled().host).outerHTML], { type: 'text/html' }), 'text/plain': new Blob([result.markdown], { type: 'text/plain' }) })]);
+        toast('已复制，包含表格格式与颜色'); return;
+      } catch { await copyText(result.markdown); toast('已复制 Markdown；当前浏览器未允许富文本复制'); return; }
+    }
+    await copyText(view === 'markdown' ? result.coloredMarkdown : result.markdown);
+    toast(view === 'markdown' ? '已复制带颜色的 Markdown' : '已复制 Markdown；当前浏览器不支持富文本复制');
+  } catch { view = 'markdown'; document.querySelector('[data-view="markdown"]').click(); $('markdown').focus(); $('markdown').select(); toast('剪贴板不可用，结果已选中，请按 ⌘ / Ctrl + C'); }
+});
+$('download').addEventListener('click', () => {
+  update(); const url = URL.createObjectURL(new Blob([result.coloredMarkdown], { type: 'text/markdown;charset=utf-8' }));
+  const link = document.createElement('a'); link.href = url; link.download = '文档助手-处理结果.md'; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); toast('Markdown 文件已导出');
+});
+const showHelp = () => $('help-dialog').showModal();
+$('settings-toggle').addEventListener('click', () => {
+  const collapsed = $('settings-panel').classList.toggle('mobile-collapsed');
+  $('settings-toggle').setAttribute('aria-expanded', !collapsed);
+  $('settings-toggle').firstChild.textContent = collapsed ? '展开设置 ' : '收起设置 ';
+});
+$('help-button').addEventListener('click', showHelp); $('tip-help').addEventListener('click', showHelp);
+$('close-help').addEventListener('click', () => $('help-dialog').close()); $('got-it').addEventListener('click', () => { $('help-dialog').close(); $('input').focus(); });
+$('help-dialog').addEventListener('click', event => { if (event.target === $('help-dialog')) { const rect = $('help-dialog').getBoundingClientRect(); if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) $('help-dialog').close(); } });
+syncControls(); update();
+</script>
+</body>
+</html>
