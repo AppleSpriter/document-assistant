@@ -10,7 +10,9 @@ Everything runs in your browser. Nothing is uploaded; your last input is kept in
 
 ## Quick start
 
-Download `index.html` and open it in a browser. No install, no build, no dependencies.
+Try it online: https://applespriter.github.io/document-assistant/ (中文: https://applespriter.github.io/document-assistant/zh-CN.html)
+
+Or download `index.html` and open it in a browser. No install, no build, no dependencies.
 
 - `index.html`: English UI (default)
 - `zh-CN.html`: Chinese UI

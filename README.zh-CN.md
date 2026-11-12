@@ -10,7 +10,9 @@
 
 ## 使用
 
-下载 `zh-CN.html` 用浏览器打开即可，无需安装或构建。
+在线使用：https://applespriter.github.io/document-assistant/zh-CN.html （English: https://applespriter.github.io/document-assistant/）
+
+也可以下载 `zh-CN.html` 用浏览器打开即可，无需安装或构建。
 
 - `index.html`：英文版（默认）
 - `zh-CN.html`：中文版
